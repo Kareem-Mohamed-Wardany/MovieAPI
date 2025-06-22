@@ -53,6 +53,8 @@ namespace MovieAPI.Repository
 
         public async Task<IReadOnlyList<Director>> GetDirectorsAsync(int Page, int ItemsPerPage)
         => await _context.Directors.Skip((Page - 1) * ItemsPerPage).Take(ItemsPerPage).AsNoTracking().ToListAsync();
+        public async Task<IReadOnlyList<Director>> GetDirectorsAsync()
+        => await _context.Directors.AsNoTracking().ToListAsync();
 
         public async Task<int> DirectorsCountAsync()
         => await _context.Directors.CountAsync();
@@ -80,12 +82,12 @@ namespace MovieAPI.Repository
         public async Task UpdateDirectorByIdAsync(int Id, Director NewDirector)
         {
             var Director = GetDirectorById(Id);
-            if (!string.IsNullOrEmpty(Director.Image))
+            if (!string.IsNullOrEmpty(Director.Image) && !string.IsNullOrEmpty(NewDirector.Image))
             {
                 DeleteImageAsync(Director.Image);
+                Director.Image = NewDirector.Image;
             }
             Director.Name = NewDirector.Name;
-            Director.Image = NewDirector.Image;
             Director.BirthDate = NewDirector.BirthDate;
             await _context.SaveChangesAsync();
         }

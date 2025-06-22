@@ -55,6 +55,10 @@ namespace MovieAPI.Repository
         public async Task<IReadOnlyList<Actor>> GetActorsAsync(int Page, int ItemsPerPage)
         => await _context.Actors.Skip((Page - 1) * ItemsPerPage).Take(ItemsPerPage).AsNoTracking().ToListAsync();
 
+        public async Task<IReadOnlyList<Actor>> GetActorsAsync()
+        => await _context.Actors.AsNoTracking().ToListAsync();
+
+
         public async Task<int> ActorsCountAsync()
         => await _context.Actors.CountAsync();
 
@@ -81,12 +85,12 @@ namespace MovieAPI.Repository
         public async Task UpdateActorByIdAsync(int Id, Actor NewActor)
         {
             var Actor = GetActorById(Id);
-            if (!string.IsNullOrEmpty(Actor.Image))
+            if (!string.IsNullOrEmpty(Actor.Image) && !string.IsNullOrEmpty(NewActor.Image))
             {
                 DeleteImageAsync(Actor.Image);
+                Actor.Image = NewActor.Image;
             }
             Actor.Name = NewActor.Name;
-            Actor.Image = NewActor.Image;
             Actor.BirthDate = NewActor.BirthDate;
             await _context.SaveChangesAsync();
         }

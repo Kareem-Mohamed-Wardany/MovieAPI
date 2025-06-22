@@ -26,6 +26,27 @@ namespace MovieAPI.Controllers
             _movieRepo = movieRepo;
             _mapper = mapper;
         }
+        [HttpGet("movies")]
+        [ProducesResponseType(typeof(ApiResponse), 200)]
+        [ProducesResponseType(typeof(ApiResponse), 400)]
+        public async Task<IActionResult> GetMovies()
+        {
+            var movies = _mapper.Map<IReadOnlyList<MovieToReturnDTO>>(await _movieRepo.GetAllMoviesAsync());
+            return Ok(new ApiResponse(200, "Movies Retrived Successfully!", movies));
+        }
+
+        [SwaggerOperation(
+            Summary = "Add Actor to the system"
+        )]
+        [HttpGet("actors")]
+        [ProducesResponseType(typeof(ApiResponse), 200)]
+        [ProducesResponseType(typeof(ApiResponse), 400)]
+        public async Task<IActionResult> GetActors()
+        {
+            var actors = _mapper.Map<IReadOnlyList<ActorToReturnDTO>>(await _actorRepo.GetActorsAsync());
+            return Ok(new ApiResponse(200, "Movies Retrived Successfully!", actors));
+        }
+
         [SwaggerOperation(
             Summary = "Add Actor to the system"
         )]
@@ -70,19 +91,30 @@ namespace MovieAPI.Controllers
         [ProducesResponseType(typeof(ApiResponse), 404)]
         [ProducesResponseType(401)]
         [ProducesResponseType(403)]
-        public async Task<IActionResult> UpdateActor([FromRoute] int Id, [FromForm] AddUpdateDTO newActor, IFormFile imageFile)
+        public async Task<IActionResult> UpdateActor([FromRoute] int Id, [FromForm] AddUpdateDTO newActor, IFormFile? imageFile)
         {
             var Actor = _actorRepo.GetActorById(Id);
             if (Actor == null) return NotFound(new ApiResponse(404, "Actor cannot be found"));
             string imageURL = await _actorRepo.UploadImageAsync(imageFile);
-            if (imageURL == null) return NotFound(new ApiResponse(404, "Image cannot be found"));
+            //if (imageURL == null) return NotFound(new ApiResponse(404, "Image cannot be found"));
             var newAct = _mapper.Map<Actor>(newActor);
             newAct.Image = imageURL;
             await _actorRepo.UpdateActorByIdAsync(Id, newAct);
             return Ok(new ApiResponse(200, "Actor Updated Successfully!", _mapper.Map<ActorToReturnDTO>(newAct)));
         }
 
-
+        [SwaggerOperation(
+            Summary = "Get All Directors in the system",
+            Description = "You will get Data of Directors with Pagination"
+        )]
+        [HttpGet("directors")]
+        [ProducesResponseType(typeof(ApiResponse), 200)]
+        [ProducesResponseType(typeof(ApiResponse), 400)]
+        public async Task<IActionResult> GetDirectors()
+        {
+            var directors = _mapper.Map<IReadOnlyList<DirectorToReturnDTO>>(await _directorRepo.GetDirectorsAsync());
+            return Ok(new ApiResponse(200, "Directors Retrived Successfully!",  directors));
+        }
         [SwaggerOperation(
             Summary = "Add Director to the system"
         )]
@@ -128,12 +160,12 @@ namespace MovieAPI.Controllers
         [ProducesResponseType(typeof(ApiResponse), 404)]
         [ProducesResponseType(401)]
         [ProducesResponseType(403)]
-        public async Task<IActionResult> UpdateDirector([FromRoute] int Id, [FromForm] AddUpdateDTO newDirector, IFormFile imageFile)
+        public async Task<IActionResult> UpdateDirector([FromRoute] int Id, [FromForm] AddUpdateDTO newDirector, IFormFile? imageFile)
         {
             var Director = _directorRepo.GetDirectorById(Id);
             if (Director == null) return NotFound(new ApiResponse(404, "Director cannot be found"));
             string imageURL = await _directorRepo.UploadImageAsync(imageFile);
-            if (imageURL == null) return NotFound(new ApiResponse(404, "Image cannot be found"));
+            //if (imageURL == null) return NotFound(new ApiResponse(404, "Image cannot be found"));
             var newDir = _mapper.Map<Director>(newDirector);
             newDir.Image = imageURL;
             await _directorRepo.UpdateDirectorByIdAsync(Id, newDir);
@@ -186,12 +218,12 @@ namespace MovieAPI.Controllers
         [ProducesResponseType(typeof(ApiResponse), 404)]
         [ProducesResponseType(401)]
         [ProducesResponseType(403)]
-        public async Task<IActionResult> UpdateMovie([FromRoute] int Id, [FromForm] MovieToAddDTO newMovie, IFormFile imageFile)
+        public async Task<IActionResult> UpdateMovie([FromRoute] int Id, [FromForm] MovieToAddDTO newMovie, IFormFile? imageFile)
         {
             var movie = await _movieRepo.GetMovieByIdAsync(Id);
             if (movie == null) return NotFound(new ApiResponse(404, "Movie cannot be found"));
             string imageURL = await _movieRepo.UploadImageAsync(imageFile);
-            if (imageURL == null) return NotFound(new ApiResponse(404, "Image cannot be found"));
+            //if (imageURL == null) return NotFound(new ApiResponse(404, "Image cannot be found"));
             var newMov = _mapper.Map<Movie>(newMovie);
             newMov.Image = imageURL;
             await _movieRepo.UpdateMovieByIdAsync(Id, newMov);

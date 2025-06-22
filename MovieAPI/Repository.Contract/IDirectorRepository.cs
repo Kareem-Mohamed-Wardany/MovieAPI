@@ -5,6 +5,8 @@ namespace MovieAPI.Repository.Contract
     public interface IDirectorRepository
     {
         Task<IReadOnlyList<Director>> GetDirectorsAsync(int Page, int ItemsPerPage);
+        Task<IReadOnlyList<Director>> GetDirectorsAsync();
+
         Director GetDirectorById(int id);
         Task AddDirectorAsync(Director NewDirector);
         Task DeleteDirectorAsync(int id);

@@ -5,6 +5,8 @@ namespace MovieAPI.Repository.Contract
     public interface IActorRepository
     {
         Task<IReadOnlyList<Actor>> GetActorsAsync(int Page, int ItemsPerPage);
+        Task<IReadOnlyList<Actor>> GetActorsAsync();
+
         Actor GetActorById(int id);
         Task AddActorAsync(Actor NewActor);
         Task DeleteActorAsync(int id);

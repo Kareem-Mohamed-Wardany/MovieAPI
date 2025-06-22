@@ -11,7 +11,7 @@ namespace MovieAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "User")]
+    [Authorize(Roles = "User,Admin")]
     public class FavoriteController : ControllerBase
     {
         private readonly IFavoriteRepository _favoriteRepo;

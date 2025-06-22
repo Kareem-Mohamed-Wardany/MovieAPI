@@ -49,6 +49,8 @@ namespace MovieAPI.Repository
 
         public async Task<IReadOnlyList<Movie>> GetAllMoviesAsync(int Page, int ItemsPerPage)
         => await _context.Movies.Include(m => m.Director).Skip((Page - 1) * ItemsPerPage).Take(ItemsPerPage).AsNoTracking().ToListAsync();
+        public async Task<IReadOnlyList<Movie>> GetAllMoviesAsync()
+        => await _context.Movies.Include(m => m.Director).AsNoTracking().ToListAsync();
 
         public async Task<IReadOnlyList<Movie>> GetDirectorMoviesAsync(int DirectorId)
         => await _context.Movies.Where(x => x.DirectorId == DirectorId).AsNoTracking().ToListAsync();
@@ -59,12 +61,12 @@ namespace MovieAPI.Repository
         public async Task UpdateMovieByIdAsync(int id, Movie newMovie)
         {
             var movie = await GetMovieByIdAsync(id);
-            if (!string.IsNullOrEmpty(movie.Image))
+            if (!string.IsNullOrEmpty(movie.Image) && !string.IsNullOrEmpty(newMovie.Image))
             {
                 DeleteImageAsync(movie.Image);
+                movie.Image = newMovie.Image;
             }
             movie.Title = newMovie.Title;
-            movie.Image = newMovie.Image;
             movie.Description = newMovie.Description;
             movie.Genre = newMovie.Genre;
             movie.Duration = newMovie.Duration;

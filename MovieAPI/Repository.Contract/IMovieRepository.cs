@@ -5,6 +5,7 @@ namespace MovieAPI.Repository.Contract
     public interface IMovieRepository
     {
         Task<IReadOnlyList<Movie>> GetAllMoviesAsync(int Page, int ItemsPerPage);
+        Task<IReadOnlyList<Movie>> GetAllMoviesAsync();
         Task<IReadOnlyList<Movie>> GetActorMoviesAsync(int ActorId);
         Task<IReadOnlyList<Movie>> GetDirectorMoviesAsync(int DirectorId);
         Task<Movie> GetMovieByIdAsync(int id);

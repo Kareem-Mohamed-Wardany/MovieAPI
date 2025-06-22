@@ -24,9 +24,17 @@ namespace MovieAPI
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
             // Add services to the container.
-
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", policy =>
+                {
+                    policy
+                        .AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader();
+                });
+            });
             builder.Services.AddControllers()
             .AddJsonOptions(options =>
             {
@@ -175,7 +183,7 @@ namespace MovieAPI
             app.UseStatusCodePagesWithReExecute("/errors/{0}"); // Custom Error Handling Middleware
 
             app.UseStaticFiles();
-
+            app.UseCors("AllowAll");
             app.UseAuthentication();
             app.UseAuthorization();
 

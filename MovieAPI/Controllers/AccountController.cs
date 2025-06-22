@@ -43,7 +43,8 @@ namespace MovieAPI.Controllers
                 Id = user.Id,
                 UserName = user.UserName,
                 Email = user.Email,
-                Token = await _authService.CreateTokenAsync(user, _userManager)
+                Token = await _authService.CreateTokenAsync(user, _userManager),
+                Roles= await _userManager.GetRolesAsync(user)
             });
 
         }

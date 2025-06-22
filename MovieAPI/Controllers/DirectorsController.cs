@@ -38,7 +38,10 @@ namespace MovieAPI.Controllers
             }
 
             var totalDirectors = await _directorRepo.DirectorsCountAsync();
+            Console.WriteLine(totalDirectors);
             var totalPages = (int)Math.Ceiling(totalDirectors / (double)Limit);
+            Console.WriteLine(totalPages);
+
 
             if (Page > totalPages)
             {
